@@ -27,6 +27,7 @@ import { PrintJob, Shop, JobStatus } from '@/lib/types';
 import { isShopOnline } from '@/lib/pricing';
 import { supabaseClient } from '@/lib/supabase/client';
 import { safeFetchJson } from '@/lib/api-client';
+import ThemeToggle from '@/components/ThemeToggle';
 
 export default function ShopkeeperDashboardPage() {
   const params = useParams();
@@ -204,6 +205,7 @@ export default function ShopkeeperDashboardPage() {
           </div>
 
           <div className="flex items-center space-x-3">
+            <ThemeToggle />
             <button
               onClick={handleSendHeartbeat}
               disabled={agentSimulating}
@@ -215,7 +217,7 @@ export default function ShopkeeperDashboardPage() {
 
             <button
               onClick={() => setShowQRModal(true)}
-              className="py-2.5 px-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold flex items-center space-x-2 shadow-lg shadow-indigo-600/30 transition-all active:scale-95"
+              className="py-2.5 px-4 bg-[var(--primary-green)] hover:opacity-90 text-white rounded-xl text-xs font-bold flex items-center space-x-2 shadow-lg transition-all active:scale-95"
             >
               <QrCode className="w-4 h-4" />
               <span>Shop QR Poster</span>

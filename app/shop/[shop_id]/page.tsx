@@ -27,6 +27,7 @@ import { Shop, PrintSettings, ColorMode, PrintJob } from '@/lib/types';
 import { calculatePrintPrice, isShopOnline } from '@/lib/pricing';
 import { supabaseClient } from '@/lib/supabase/client';
 import { safeFetchJson } from '@/lib/api-client';
+import ThemeToggle from '@/components/ThemeToggle';
 
 export default function CustomerShopPage() {
   const params = useParams();
@@ -330,13 +331,16 @@ export default function CustomerShopPage() {
           </div>
         </div>
 
-        <button
-          onClick={() => fetchShopDetails(true)}
-          className="p-2 text-slate-400 hover:text-slate-200 transition-colors"
-          title="Refresh Shop Status"
-        >
-          <RefreshCw className="w-4 h-4" />
-        </button>
+        <div className="flex items-center space-x-2">
+          <ThemeToggle />
+          <button
+            onClick={() => fetchShopDetails(true)}
+            className="p-2 text-slate-400 hover:text-slate-200 transition-colors"
+            title="Refresh Shop Status"
+          >
+            <RefreshCw className="w-4 h-4" />
+          </button>
+        </div>
       </header>
 
       {/* Main Content Body */}
