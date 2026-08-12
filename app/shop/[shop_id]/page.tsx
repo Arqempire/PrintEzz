@@ -38,6 +38,20 @@ export default function CustomerShopPage() {
   const [loadingShop, setLoadingShop] = useState(true);
   const [activeStep, setActiveStep] = useState<'upload' | 'settings' | 'pay' | 'status'>('upload');
   
+  // Customer & Session state
+  const [customerId, setCustomerId] = useState<string>('');
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      let id = localStorage.getItem('printezz_customer_id');
+      if (!id) {
+        id = `usr_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 7)}`;
+        localStorage.setItem('printezz_customer_id', id);
+      }
+      setCustomerId(id);
+    }
+  }, []);
+
   // Upload state
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [filePreviewUrl, setFilePreviewUrl] = useState<string | null>(null);
@@ -231,6 +245,7 @@ export default function CustomerShopPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           shopId,
+          customerId,
           fileUrl: uploadedPublicUrl || r2FileKey || `mock_${selectedFile.name}`,
           fileName: selectedFile.name,
           pageCount,
@@ -761,8 +776,12 @@ export default function CustomerShopPage() {
                 {/* Job Summary Card */}
                 <div className="glass-card p-4 rounded-xl space-y-2 text-xs border-slate-800">
                   <div className="flex justify-between text-slate-400">
-                    <span>Order Reference ID</span>
-                    <span className="font-mono text-slate-200">{createdJob.id.substring(0, 8)}</span>
+                    <span>Unique Customer ID</span>
+                    <span className="font-mono text-violet-300 font-semibold">{createdJob.customer_id || customerId || 'usr_anon'}</span>
+                  </div>
+                  <div className="flex justify-between text-slate-400">
+                    <span>Order Job ID</span>
+                    <span className="font-mono text-indigo-300 font-bold">#{createdJob.id.substring(0, 8)}</span>
                   </div>
                   <div className="flex justify-between text-slate-400">
                     <span>File</span>

@@ -32,6 +32,7 @@ export interface PrintSettings {
 export interface PrintJob {
   id: string;
   shop_id: string;
+  customer_id?: string | null;
   file_url: string | null;
   file_name: string;
   page_count: number;

@@ -294,6 +294,7 @@ export default function ShopkeeperDashboardPage() {
                 <tr>
                   <th className="py-3.5 px-4">Timestamp</th>
                   <th className="py-3.5 px-4">Job ID</th>
+                  <th className="py-3.5 px-4">Customer ID</th>
                   <th className="py-3.5 px-4">File Name</th>
                   <th className="py-3.5 px-4">Settings</th>
                   <th className="py-3.5 px-4">Price</th>
@@ -305,7 +306,7 @@ export default function ShopkeeperDashboardPage() {
               <tbody className="divide-y divide-slate-800/60">
                 {filteredJobs.length === 0 ? (
                   <tr>
-                    <td colSpan={8} className="py-12 text-center text-slate-500">
+                    <td colSpan={9} className="py-12 text-center text-slate-500">
                       No print jobs found matching filter '{statusFilter}'
                     </td>
                   </tr>
@@ -315,8 +316,11 @@ export default function ShopkeeperDashboardPage() {
                       <td className="py-3.5 px-4 font-mono text-slate-400">
                         {new Date(job.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </td>
-                      <td className="py-3.5 px-4 font-mono text-indigo-300">
+                      <td className="py-3.5 px-4 font-mono text-indigo-300 font-semibold">
                         #{job.id.substring(0, 8)}
+                      </td>
+                      <td className="py-3.5 px-4 font-mono text-violet-300">
+                        {job.customer_id || 'usr_anon'}
                       </td>
                       <td className="py-3.5 px-4 font-medium text-slate-200 max-w-[180px] truncate">
                         {job.file_name}

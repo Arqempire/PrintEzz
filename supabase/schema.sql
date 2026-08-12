@@ -17,6 +17,7 @@ create table if not exists public.shops (
 create table if not exists public.print_jobs (
   id uuid primary key default gen_random_uuid(),
   shop_id uuid references public.shops(id) on delete cascade not null,
+  customer_id text,
   file_url text,
   file_name text not null,
   page_count int not null default 1 check (page_count > 0),
@@ -38,6 +39,7 @@ create table if not exists public.print_jobs (
 
 -- Indices
 create index if not exists idx_print_jobs_shop_id on public.print_jobs(shop_id);
+create index if not exists idx_print_jobs_customer_id on public.print_jobs(customer_id);
 create index if not exists idx_print_jobs_status on public.print_jobs(status);
 create index if not exists idx_print_jobs_delete_at on public.print_jobs(delete_at) where retention_extended = false;
 

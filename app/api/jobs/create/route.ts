@@ -9,6 +9,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const {
       shopId,
+      customerId,
       fileUrl,
       fileName,
       pageCount,
@@ -38,9 +39,10 @@ export async function POST(req: NextRequest) {
     // 2. Compute price server-side for integrity
     const breakdown = calculatePrintPrice(shop, pageCount || 1, copies || 1, colorMode || 'bw');
 
-    // 3. Create print job in 'pending' status
+    // 3. Create print job with unique customer_id and job ID
     const newJob = await savePrintJob({
       shop_id: shop.id,
+      customer_id: customerId || `usr_${Date.now().toString(36)}`,
       file_url: fileUrl || null,
       file_name: fileName,
       page_count: breakdown.page_count,
