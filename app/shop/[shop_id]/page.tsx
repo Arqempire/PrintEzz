@@ -24,6 +24,7 @@ import {
 import { Shop, PrintSettings, ColorMode, PrintJob } from '@/lib/types';
 import { calculatePrintPrice, isShopOnline } from '@/lib/pricing';
 import { supabaseClient } from '@/lib/supabase/client';
+import { safeFetchJson } from '@/lib/api-client';
 
 export default function CustomerShopPage() {
   const params = useParams();
@@ -67,12 +68,11 @@ export default function CustomerShopPage() {
   const fetchShopDetails = async () => {
     try {
       setLoadingShop(true);
-      const res = await fetch(`/api/shop/heartbeat`, {
+      const data = await safeFetchJson<{ shop?: Shop; queuedJobsCount?: number }>('/api/shop/heartbeat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ shopId }),
       });
-      const data = await res.json();
       if (data.shop) {
         setShop(data.shop);
         setQueueAheadCount(data.queuedJobsCount || 0);
@@ -136,25 +136,29 @@ export default function CustomerShopPage() {
     // Process file server-side to extract PDF page count or auto-convert images
     try {
       setUploading(true);
-      setUploadProgress(20);
+      setUploadProgress(10);
 
       const formData = new FormData();
       formData.append('file', file);
 
-      const processRes = await fetch('/api/upload/process', {
+      // Step A: Server-side page counting & image conversion
+      const processData = await safeFetchJson<{ pageCount?: number }>('/api/upload/process', {
         method: 'POST',
         body: formData,
       });
 
-      const processData = await processRes.json();
       if (processData.pageCount) {
         setPageCount(processData.pageCount);
       }
 
-      setUploadProgress(50);
+      setUploadProgress(35);
 
-      // Request Presigned R2 upload URL
-      const presignRes = await fetch('/api/upload/presign', {
+      // Step B: Get presigned upload URL
+      const { uploadUrl, fileKey, publicUrl } = await safeFetchJson<{
+        uploadUrl: string;
+        fileKey: string;
+        publicUrl: string;
+      }>('/api/upload/presign', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -163,28 +167,39 @@ export default function CustomerShopPage() {
         }),
       });
 
-      const { uploadUrl, fileKey, publicUrl } = await presignRes.json();
       setR2FileKey(fileKey);
       setUploadedPublicUrl(publicUrl);
 
-      // Perform actual upload to presigned URL
-      setUploadProgress(80);
-      try {
-        await fetch(uploadUrl, {
-          method: 'PUT',
-          headers: { 'Content-Type': file.type || 'application/octet-stream' },
-          body: file,
+      setUploadProgress(45);
+
+      // Step C: Direct upload with real-time XHR progress tracking
+      if (uploadUrl && uploadUrl.startsWith('http')) {
+        await new Promise<void>((resolve) => {
+          const xhr = new XMLHttpRequest();
+          xhr.open('PUT', uploadUrl, true);
+          xhr.setRequestHeader('Content-Type', file.type || 'application/octet-stream');
+
+          xhr.upload.onprogress = (event) => {
+            if (event.lengthComputable) {
+              const filePct = Math.round((event.loaded / event.total) * 50); // scale 45% -> 95%
+              setUploadProgress(45 + filePct);
+            }
+          };
+
+          xhr.onload = () => resolve();
+          xhr.onerror = () => resolve(); // fallback gracefully
+          xhr.send(file);
         });
-      } catch (uploadErr) {
-        console.warn('Presigned upload warning (handled by server fallback):', uploadErr);
       }
 
       setUploadProgress(100);
-      setActiveStep('settings');
+      setTimeout(() => {
+        setActiveStep('settings');
+        setUploading(false);
+      }, 300);
     } catch (err: any) {
       console.error('File upload process error:', err);
       alert('Error uploading file: ' + (err.message || 'Please try again.'));
-    } finally {
       setUploading(false);
     }
   };
@@ -206,7 +221,7 @@ export default function CustomerShopPage() {
     try {
       setCreatingJob(true);
 
-      const res = await fetch('/api/jobs/create', {
+      const data = await safeFetchJson<{ job: PrintJob }>('/api/jobs/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -220,11 +235,6 @@ export default function CustomerShopPage() {
           pageRange: settings.page_range,
         }),
       });
-
-      const data = await res.json();
-      if (!res.ok || data.error) {
-        throw new Error(data.error || 'Failed to initialize order');
-      }
 
       setCreatedJob(data.job);
       setActiveStep('pay');
@@ -242,13 +252,12 @@ export default function CustomerShopPage() {
     try {
       setPaymentSimulating(true);
 
-      const res = await fetch('/api/jobs/simulate-payment', {
+      const data = await safeFetchJson<{ job: PrintJob }>('/api/jobs/simulate-payment', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ jobId: createdJob.id }),
       });
 
-      const data = await res.json();
       if (data.job) {
         setCreatedJob(data.job);
         setActiveStep('status');
@@ -364,14 +373,37 @@ export default function CustomerShopPage() {
                   <p className="text-[11px] text-slate-400 mt-1">or drag and drop document here</p>
 
                   {uploading && (
-                    <div className="absolute inset-0 bg-slate-950/90 flex flex-col items-center justify-center p-4 space-y-2">
-                      <RefreshCw className="w-6 h-6 animate-spin text-indigo-400" />
-                      <p className="text-xs font-medium text-slate-300">Processing file & counting pages...</p>
-                      <div className="w-48 bg-slate-800 h-1.5 rounded-full overflow-hidden">
-                        <div
-                          className="bg-indigo-500 h-full transition-all duration-300"
-                          style={{ width: `${uploadProgress}%` }}
-                        />
+                    <div className="absolute inset-0 bg-slate-950/95 backdrop-blur-sm flex flex-col items-center justify-center p-6 space-y-3 z-20">
+                      <div className="w-10 h-10 rounded-full bg-indigo-900/60 border border-indigo-500/40 text-indigo-400 flex items-center justify-center animate-spin">
+                        <RefreshCw className="w-5 h-5 text-indigo-400" />
+                      </div>
+                      <div className="text-center space-y-1 max-w-[240px]">
+                        <p className="text-xs font-bold text-slate-100 truncate">
+                          {selectedFile?.name || 'Document'}
+                        </p>
+                        <p className="text-[11px] text-indigo-300 font-medium">
+                          {uploadProgress < 35
+                            ? 'Processing file & counting pages...'
+                            : uploadProgress < 95
+                            ? `Uploading to secure storage (${uploadProgress}%)`
+                            : 'Upload complete!'}
+                        </p>
+                      </div>
+
+                      {/* Progress Bar with glowing indicator */}
+                      <div className="w-full max-w-[240px] space-y-1">
+                        <div className="w-full bg-slate-800/80 h-2.5 rounded-full overflow-hidden p-0.5 border border-indigo-500/30">
+                          <div
+                            className="bg-gradient-to-r from-indigo-500 via-violet-500 to-emerald-400 h-full rounded-full transition-all duration-200 shadow-lg shadow-indigo-500/50"
+                            style={{ width: `${uploadProgress}%` }}
+                          />
+                        </div>
+                        <div className="flex justify-between text-[10px] text-slate-400 font-mono">
+                          <span>
+                            {selectedFile ? `${(selectedFile.size / 1024 / 1024).toFixed(1)} MB` : ''}
+                          </span>
+                          <span className="text-indigo-400 font-bold">{uploadProgress}%</span>
+                        </div>
                       </div>
                     </div>
                   )}

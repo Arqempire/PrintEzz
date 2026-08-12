@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { PrintJob } from '@/lib/types';
 import { supabaseClient } from '@/lib/supabase/client';
+import { safeFetchJson } from '@/lib/api-client';
 import Link from 'next/link';
 
 export default function JobStatusPage() {
@@ -27,11 +28,8 @@ export default function JobStatusPage() {
   const fetchJobStatus = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`/api/jobs/${jobId}/status`);
-      if (res.ok) {
-        const data = await res.json();
-        if (data.job) setJob(data.job);
-      }
+      const data = await safeFetchJson<{ job?: PrintJob }>(`/api/jobs/${jobId}/status`);
+      if (data.job) setJob(data.job);
     } catch (err) {
       console.error('Error fetching job status:', err);
     } finally {

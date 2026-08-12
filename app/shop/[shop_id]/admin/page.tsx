@@ -26,6 +26,7 @@ import { QRCodeSVG } from 'qrcode.react';
 import { PrintJob, Shop, JobStatus } from '@/lib/types';
 import { isShopOnline } from '@/lib/pricing';
 import { supabaseClient } from '@/lib/supabase/client';
+import { safeFetchJson } from '@/lib/api-client';
 
 export default function ShopkeeperDashboardPage() {
   const params = useParams();
@@ -48,20 +49,12 @@ export default function ShopkeeperDashboardPage() {
   const loadDashboardData = async () => {
     try {
       setLoading(true);
-      const [heartbeatRes, jobsRes] = await Promise.all([
-        fetch('/api/shop/heartbeat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ shopId }),
-        }),
-        fetch(`/api/shop/heartbeat`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ shopId }),
-        }),
-      ]);
+      const heartbeatData = await safeFetchJson<{ shop?: Shop; queuedJobs?: PrintJob[] }>('/api/shop/heartbeat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ shopId }),
+      });
 
-      const heartbeatData = await heartbeatRes.json();
       if (heartbeatData.shop) {
         setShop(heartbeatData.shop);
       }
@@ -105,7 +98,7 @@ export default function ShopkeeperDashboardPage() {
   // Action: Update Job Status
   const handleUpdateJobStatus = async (jobId: string, newStatus: JobStatus, failureReason?: string) => {
     try {
-      const res = await fetch('/api/shop/agent-jobs', {
+      const data = await safeFetchJson<{ job?: PrintJob }>('/api/shop/agent-jobs', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -115,9 +108,8 @@ export default function ShopkeeperDashboardPage() {
         }),
       });
 
-      const data = await res.json();
       if (data.job) {
-        setJobs((prev) => prev.map((j) => (j.id === jobId ? data.job : j)));
+        setJobs((prev) => prev.map((j) => (j.id === jobId ? data.job! : j)));
       }
     } catch (err: any) {
       alert('Failed to update job: ' + err.message);
@@ -127,7 +119,7 @@ export default function ShopkeeperDashboardPage() {
   // Action: Toggle File Retention (24h+)
   const handleToggleRetention = async (jobId: string, currentExtended: boolean) => {
     try {
-      const res = await fetch('/api/shop/agent-jobs', {
+      const data = await safeFetchJson<{ job?: PrintJob }>('/api/shop/agent-jobs', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -136,9 +128,8 @@ export default function ShopkeeperDashboardPage() {
         }),
       });
 
-      const data = await res.json();
       if (data.job) {
-        setJobs((prev) => prev.map((j) => (j.id === jobId ? data.job : j)));
+        setJobs((prev) => prev.map((j) => (j.id === jobId ? data.job! : j)));
       }
     } catch (err: any) {
       alert('Failed to update retention: ' + err.message);
@@ -149,12 +140,11 @@ export default function ShopkeeperDashboardPage() {
   const handleSendHeartbeat = async () => {
     try {
       setAgentSimulating(true);
-      const res = await fetch('/api/shop/heartbeat', {
+      const data = await safeFetchJson<{ shop?: Shop }>('/api/shop/heartbeat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ shopId }),
       });
-      const data = await res.json();
       if (data.shop) setShop(data.shop);
     } finally {
       setAgentSimulating(false);
