@@ -46,9 +46,11 @@ export default function ShopkeeperDashboardPage() {
   const [password, setPassword] = useState('');
 
   // Fetch shop and jobs
-  const loadDashboardData = async () => {
+  const loadDashboardData = async (isFirstLoad = false) => {
     try {
-      setLoading(true);
+      if (isFirstLoad || !shop) {
+        setLoading(true);
+      }
       const heartbeatData = await safeFetchJson<{ shop?: Shop; queuedJobs?: PrintJob[] }>('/api/shop/heartbeat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -69,8 +71,8 @@ export default function ShopkeeperDashboardPage() {
   };
 
   useEffect(() => {
-    loadDashboardData();
-    const interval = setInterval(loadDashboardData, 10000); // 10s auto refresh
+    loadDashboardData(true);
+    const interval = setInterval(() => loadDashboardData(false), 10000); // 10s silent auto refresh
 
     // Realtime channel for instant queue updates
     const channel = supabaseClient

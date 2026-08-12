@@ -20,6 +20,8 @@ import {
   Copy,
   ChevronRight,
   FileCheck2,
+  Eye,
+  X,
 } from 'lucide-react';
 import { Shop, PrintSettings, ColorMode, PrintJob } from '@/lib/types';
 import { calculatePrintPrice, isShopOnline } from '@/lib/pricing';
@@ -39,6 +41,7 @@ export default function CustomerShopPage() {
   // Upload state
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [filePreviewUrl, setFilePreviewUrl] = useState<string | null>(null);
+  const [showFilePreviewModal, setShowFilePreviewModal] = useState(false);
   const [pageCount, setPageCount] = useState<number>(1);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -65,9 +68,11 @@ export default function CustomerShopPage() {
   const cameraInputRef = useRef<HTMLInputElement>(null);
 
   // Fetch Shop details & heartbeat status
-  const fetchShopDetails = async () => {
+  const fetchShopDetails = async (isFirstLoad = false) => {
     try {
-      setLoadingShop(true);
+      if (isFirstLoad || !shop) {
+        setLoadingShop(true);
+      }
       const data = await safeFetchJson<{ shop?: Shop; queuedJobsCount?: number }>('/api/shop/heartbeat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -85,8 +90,8 @@ export default function CustomerShopPage() {
   };
 
   useEffect(() => {
-    fetchShopDetails();
-    const interval = setInterval(fetchShopDetails, 15000); // refresh every 15s
+    fetchShopDetails(true);
+    const interval = setInterval(() => fetchShopDetails(false), 15000); // silent background refresh every 15s
     return () => clearInterval(interval);
   }, [shopId]);
 
@@ -269,9 +274,9 @@ export default function CustomerShopPage() {
     }
   };
 
-  if (loadingShop) {
+  if (loadingShop && !shop) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center py-20 text-slate-400">
+      <div className="w-full max-w-md mx-auto min-h-screen flex-1 flex flex-col items-center justify-center py-20 text-slate-400">
         <RefreshCw className="w-8 h-8 animate-spin text-indigo-500 mb-3" />
         <p className="text-sm font-medium">Connecting to print shop...</p>
       </div>
@@ -279,7 +284,7 @@ export default function CustomerShopPage() {
   }
 
   return (
-    <div className="flex-1 flex flex-col justify-between py-4">
+    <div className="w-full max-w-md mx-auto min-h-screen flex flex-col justify-between px-4 pt-safe pb-safe shadow-2xl bg-slate-950/60 border-x border-slate-800/40">
       {/* Top Bar / Header */}
       <header className="mb-4 pb-3 border-b border-slate-800/60 flex items-center justify-between">
         <div className="flex items-center space-x-3">
@@ -311,7 +316,7 @@ export default function CustomerShopPage() {
         </div>
 
         <button
-          onClick={fetchShopDetails}
+          onClick={() => fetchShopDetails(true)}
           className="p-2 text-slate-400 hover:text-slate-200 transition-colors"
           title="Refresh Shop Status"
         >
@@ -332,7 +337,7 @@ export default function CustomerShopPage() {
               The shopkeeper's printing terminal is currently disconnected or updating. Please notify the counter staff to resume print service.
             </p>
             <button
-              onClick={fetchShopDetails}
+              onClick={() => fetchShopDetails(true)}
               className="w-full py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl font-medium text-sm flex items-center justify-center space-x-2 transition-all active:scale-95"
             >
               <RefreshCw className="w-4 h-4" />
@@ -457,28 +462,48 @@ export default function CustomerShopPage() {
                   </button>
                 </div>
 
-                {/* File Thumbnail & Preview Card */}
-                <div className="glass-card p-3 rounded-xl flex items-center space-x-3 border-indigo-500/20">
-                  {filePreviewUrl ? (
-                    <img
-                      src={filePreviewUrl}
-                      alt="Preview"
-                      className="w-12 h-12 object-cover rounded-lg border border-slate-700"
-                    />
-                  ) : (
-                    <div className="w-12 h-12 rounded-lg bg-indigo-950/80 border border-indigo-800/40 text-indigo-400 flex items-center justify-center">
-                      <FileText className="w-6 h-6" />
+                {/* File Thumbnail & Interactive Preview Card */}
+                <div
+                  onClick={() => setShowFilePreviewModal(true)}
+                  className="glass-card glass-card-hover p-3 rounded-xl flex items-center justify-between border-indigo-500/30 hover:border-indigo-500/60 cursor-pointer group transition-all"
+                  title="Click to view and inspect document pages"
+                >
+                  <div className="flex items-center space-x-3 min-w-0 flex-1">
+                    {filePreviewUrl ? (
+                      <img
+                        src={filePreviewUrl}
+                        alt="Preview"
+                        className="w-12 h-12 object-cover rounded-lg border border-slate-700 group-hover:scale-105 transition-transform"
+                      />
+                    ) : (
+                      <div className="w-12 h-12 rounded-lg bg-indigo-950/80 border border-indigo-800/40 text-indigo-400 flex items-center justify-center group-hover:scale-105 transition-transform">
+                        <FileText className="w-6 h-6" />
+                      </div>
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-semibold text-slate-200 truncate group-hover:text-indigo-300 transition-colors">
+                        {selectedFile.name}
+                      </p>
+                      <p className="text-[11px] text-slate-400 flex items-center mt-0.5">
+                        <span className="bg-indigo-900/60 text-indigo-300 px-1.5 py-0.5 rounded mr-2 font-mono text-[10px]">
+                          {pageCount} {pageCount === 1 ? 'page' : 'pages'}
+                        </span>
+                        {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
+                      </p>
                     </div>
-                  )}
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-semibold text-slate-200 truncate">{selectedFile.name}</p>
-                    <p className="text-[11px] text-slate-400 flex items-center mt-0.5">
-                      <span className="bg-indigo-900/60 text-indigo-300 px-1.5 py-0.5 rounded mr-2 font-mono text-[10px]">
-                        {pageCount} {pageCount === 1 ? 'page' : 'pages'}
-                      </span>
-                      {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
-                    </p>
                   </div>
+
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowFilePreviewModal(true);
+                    }}
+                    className="ml-2 px-3 py-1.5 bg-indigo-900/80 hover:bg-indigo-800 text-indigo-200 rounded-lg text-xs font-semibold flex items-center space-x-1.5 border border-indigo-700/50 transition-colors"
+                  >
+                    <Eye className="w-3.5 h-3.5 text-indigo-400" />
+                    <span>View File</span>
+                  </button>
                 </div>
 
                 {/* Settings Grid */}
@@ -770,6 +795,61 @@ export default function CustomerShopPage() {
           </>
         )}
       </main>
+
+      {/* Document Preview Modal */}
+      {showFilePreviewModal && selectedFile && (
+        <div className="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex flex-col justify-between p-4 md:p-6 animate-in fade-in duration-200">
+          <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+            <div className="flex items-center space-x-3 min-w-0">
+              <div className="w-9 h-9 rounded-xl bg-indigo-900/60 border border-indigo-500/40 text-indigo-400 flex items-center justify-center shrink-0">
+                <FileText className="w-5 h-5" />
+              </div>
+              <div className="min-w-0">
+                <h3 className="font-bold text-sm text-slate-100 truncate max-w-[200px] sm:max-w-md">
+                  {selectedFile.name}
+                </h3>
+                <p className="text-[11px] text-slate-400 flex items-center">
+                  <span className="text-indigo-400 font-semibold mr-2 font-mono">
+                    {pageCount} {pageCount === 1 ? 'page' : 'pages'}
+                  </span>
+                  • {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => setShowFilePreviewModal(false)}
+              className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs flex items-center justify-center transition-colors"
+              title="Close Preview"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* Viewer Area */}
+          <div className="flex-1 my-3 bg-slate-900/80 rounded-2xl overflow-hidden border border-slate-800 flex items-center justify-center relative p-2 shadow-2xl">
+            {selectedFile.type.startsWith('image/') || filePreviewUrl ? (
+              <img
+                src={filePreviewUrl || URL.createObjectURL(selectedFile)}
+                alt="Document Preview"
+                className="max-h-full max-w-full object-contain rounded-lg shadow-2xl"
+              />
+            ) : (
+              <iframe
+                src={`${URL.createObjectURL(selectedFile)}#toolbar=0`}
+                title="Document Preview Frame"
+                className="w-full h-full rounded-xl border-0 bg-white/5"
+              />
+            )}
+          </div>
+
+          <button
+            onClick={() => setShowFilePreviewModal(false)}
+            className="w-full py-3.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold text-sm rounded-xl shadow-lg shadow-indigo-600/30 transition-all active:scale-95"
+          >
+            Close Preview & Return to Order
+          </button>
+        </div>
+      )}
 
       {/* Footer Branding */}
       <footer className="mt-4 pt-3 border-t border-slate-800/60 text-center text-[10px] text-slate-500">

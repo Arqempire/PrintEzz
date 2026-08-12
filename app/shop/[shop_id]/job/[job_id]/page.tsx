@@ -64,7 +64,7 @@ export default function JobStatusPage() {
 
   if (loading && !job) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center py-20 text-slate-400">
+      <div className="w-full max-w-md mx-auto min-h-screen flex-1 flex flex-col items-center justify-center py-20 text-slate-400">
         <RefreshCw className="w-8 h-8 animate-spin text-indigo-500 mb-3" />
         <p className="text-sm font-medium">Checking live print status...</p>
       </div>
@@ -72,7 +72,7 @@ export default function JobStatusPage() {
   }
 
   return (
-    <div className="flex-1 flex flex-col justify-between py-4">
+    <div className="w-full max-w-md mx-auto min-h-screen flex flex-col justify-between px-4 pt-safe pb-safe shadow-2xl bg-slate-950/60 border-x border-slate-800/40">
       {/* Header */}
       <header className="mb-4 pb-3 border-b border-slate-800/60 flex items-center justify-between">
         <Link
