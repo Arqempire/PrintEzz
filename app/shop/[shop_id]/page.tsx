@@ -292,38 +292,38 @@ export default function CustomerShopPage() {
 
   if (loadingShop && !shop) {
     return (
-      <div className="w-full max-w-md mx-auto min-h-screen flex-1 flex flex-col items-center justify-center py-20 text-slate-400">
-        <RefreshCw className="w-8 h-8 animate-spin text-indigo-500 mb-3" />
+      <div className="w-full max-w-md mx-auto min-h-screen flex-1 flex flex-col items-center justify-center py-20 text-[var(--text-muted)]">
+        <RefreshCw className="w-8 h-8 animate-spin text-[var(--primary-green)] mb-3" />
         <p className="text-sm font-medium">Connecting to print shop...</p>
       </div>
     );
   }
 
   return (
-    <div className="w-full max-w-md mx-auto min-h-screen flex flex-col justify-between px-4 pt-safe pb-safe shadow-2xl bg-slate-950/60 border-x border-slate-800/40">
+    <div className="w-full max-w-md mx-auto min-h-screen flex flex-col justify-between px-4 pt-safe pb-safe shadow-2xl bg-[var(--bg-color)] text-[var(--text-main)] border-x border-[var(--card-border)] transition-colors duration-300">
       {/* Top Bar / Header */}
-      <header className="mb-4 pb-3 border-b border-slate-800/60 flex items-center justify-between">
+      <header className="mb-4 pb-3 border-b border-[var(--card-border)] flex items-center justify-between">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white shadow-lg shadow-indigo-500/20">
+          <div className="w-10 h-10 rounded-xl bg-[var(--primary-green)] flex items-center justify-center text-white shadow-md">
             <Printer className="w-5 h-5" />
           </div>
           <div>
-            <h1 className="font-bold text-base text-slate-100 leading-tight">
+            <h1 className="font-bold text-base text-[var(--primary-green)] font-serif-title leading-tight">
               {shop?.name || 'Self-Service Print Shop'}
             </h1>
             <div className="flex items-center space-x-2 mt-0.5">
               <span className="inline-flex items-center text-xs">
                 <span
                   className={`w-2 h-2 rounded-full mr-1.5 ${
-                    online ? 'bg-emerald-400 animate-pulse' : 'bg-rose-500'
+                    online ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'
                   }`}
                 />
-                <span className={online ? 'text-emerald-400 font-medium' : 'text-rose-400'}>
+                <span className={online ? 'text-emerald-600 dark:text-emerald-400 font-medium' : 'text-rose-500'}>
                   {online ? 'Online & Ready' : 'Shop Offline'}
                 </span>
               </span>
               {online && queueAheadCount > 0 && (
-                <span className="text-[11px] bg-indigo-950/80 text-indigo-300 border border-indigo-800/40 px-2 py-0.5 rounded-full">
+                <span className="text-[11px] bg-[var(--badge-bg)] text-[var(--badge-text)] px-2 py-0.5 rounded-full font-medium">
                   {queueAheadCount} in queue
                 </span>
               )}
@@ -335,7 +335,7 @@ export default function CustomerShopPage() {
           <ThemeToggle />
           <button
             onClick={() => fetchShopDetails(true)}
-            className="p-2 text-slate-400 hover:text-slate-200 transition-colors"
+            className="p-2 text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors"
             title="Refresh Shop Status"
           >
             <RefreshCw className="w-4 h-4" />
@@ -347,17 +347,17 @@ export default function CustomerShopPage() {
       <main className="flex-1 flex flex-col justify-center space-y-4">
         {/* Offline Warning Blocking Container */}
         {!online && (
-          <div className="glass-card p-6 rounded-2xl text-center border-rose-500/30 bg-rose-950/20 my-auto">
-            <div className="w-12 h-12 rounded-full bg-rose-900/40 border border-rose-700/40 text-rose-400 flex items-center justify-center mx-auto mb-3">
+          <div className="p-6 rounded-2xl text-center bg-rose-500/10 border border-rose-500/30 my-auto">
+            <div className="w-12 h-12 rounded-full bg-rose-500/20 text-rose-500 flex items-center justify-center mx-auto mb-3">
               <AlertTriangle className="w-6 h-6" />
             </div>
-            <h2 className="text-lg font-bold text-slate-100 mb-1">Shop PC Offline</h2>
-            <p className="text-xs text-slate-400 mb-4">
+            <h2 className="text-lg font-bold font-serif-title text-[var(--text-main)] mb-1">Shop PC Offline</h2>
+            <p className="text-xs text-[var(--text-muted)] mb-4">
               The shopkeeper's printing terminal is currently disconnected or updating. Please notify the counter staff to resume print service.
             </p>
             <button
               onClick={() => fetchShopDetails(true)}
-              className="w-full py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl font-medium text-sm flex items-center justify-center space-x-2 transition-all active:scale-95"
+              className="w-full py-3 bg-[var(--secondary-btn)] hover:opacity-90 text-[var(--text-main)] rounded-full font-medium text-sm flex items-center justify-center space-x-2 transition-all active:scale-95"
             >
               <RefreshCw className="w-4 h-4" />
               <span>Check Status Again</span>
@@ -372,15 +372,15 @@ export default function CustomerShopPage() {
             {activeStep === 'upload' && (
               <div className="space-y-4 my-auto">
                 <div className="text-center space-y-1">
-                  <span className="text-xs uppercase font-semibold text-indigo-400 tracking-wider">Step 1 of 3</span>
-                  <h2 className="text-xl font-bold text-slate-100">Upload your Document</h2>
-                  <p className="text-xs text-slate-400">PDF, DOCX, JPG or PNG (up to 20MB)</p>
+                  <span className="text-xs uppercase font-semibold text-[var(--primary-green)] tracking-wider">Step 1 of 3</span>
+                  <h2 className="text-xl font-bold font-serif-title text-[var(--primary-green)]">Upload your Document</h2>
+                  <p className="text-xs text-[var(--text-muted)]">PDF, DOCX, JPG or PNG (up to 20MB)</p>
                 </div>
 
                 {/* Upload Box */}
                 <div
                   onClick={() => fileInputRef.current?.click()}
-                  className="glass-card glass-card-hover p-6 rounded-2xl border-dashed border-2 border-indigo-500/30 hover:border-indigo-500/60 text-center cursor-pointer relative overflow-hidden group"
+                  className="bg-[var(--card-bg)] p-6 rounded-2xl border-dashed border-2 border-[var(--card-border)] hover:border-[var(--primary-green)] text-center cursor-pointer relative overflow-hidden group transition-all"
                 >
                   <input
                     ref={fileInputRef}
@@ -390,22 +390,22 @@ export default function CustomerShopPage() {
                     className="hidden"
                   />
 
-                  <div className="w-14 h-14 rounded-2xl bg-indigo-900/40 border border-indigo-500/30 text-indigo-400 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                  <div className="w-14 h-14 rounded-2xl bg-[var(--badge-bg)] text-[var(--badge-text)] flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
                     <Upload className="w-7 h-7" />
                   </div>
-                  <h3 className="font-semibold text-sm text-slate-200">Tap to browse files</h3>
-                  <p className="text-[11px] text-slate-400 mt-1">or drag and drop document here</p>
+                  <h3 className="font-semibold text-sm text-[var(--text-main)]">Tap to browse files</h3>
+                  <p className="text-[11px] text-[var(--text-muted)] mt-1">or drag and drop document here</p>
 
                   {uploading && (
-                    <div className="absolute inset-0 bg-slate-950/95 backdrop-blur-sm flex flex-col items-center justify-center p-6 space-y-3 z-20">
-                      <div className="w-10 h-10 rounded-full bg-indigo-900/60 border border-indigo-500/40 text-indigo-400 flex items-center justify-center animate-spin">
-                        <RefreshCw className="w-5 h-5 text-indigo-400" />
+                    <div className="absolute inset-0 bg-[var(--bg-color)]/95 backdrop-blur-sm flex flex-col items-center justify-center p-6 space-y-3 z-20">
+                      <div className="w-10 h-10 rounded-full bg-[var(--badge-bg)] text-[var(--badge-text)] flex items-center justify-center animate-spin">
+                        <RefreshCw className="w-5 h-5" />
                       </div>
                       <div className="text-center space-y-1 max-w-[240px]">
-                        <p className="text-xs font-bold text-slate-100 truncate">
+                        <p className="text-xs font-bold text-[var(--text-main)] truncate">
                           {selectedFile?.name || 'Document'}
                         </p>
-                        <p className="text-[11px] text-indigo-300 font-medium">
+                        <p className="text-[11px] text-[var(--primary-green)] font-medium">
                           {uploadProgress < 35
                             ? 'Processing file & counting pages...'
                             : uploadProgress < 95
@@ -414,19 +414,19 @@ export default function CustomerShopPage() {
                         </p>
                       </div>
 
-                      {/* Progress Bar with glowing indicator */}
+                      {/* Progress Bar */}
                       <div className="w-full max-w-[240px] space-y-1">
-                        <div className="w-full bg-slate-800/80 h-2.5 rounded-full overflow-hidden p-0.5 border border-indigo-500/30">
+                        <div className="w-full bg-[var(--secondary-btn)] h-2.5 rounded-full overflow-hidden p-0.5 border border-[var(--card-border)]">
                           <div
-                            className="bg-gradient-to-r from-indigo-500 via-violet-500 to-emerald-400 h-full rounded-full transition-all duration-200 shadow-lg shadow-indigo-500/50"
+                            className="bg-[var(--primary-green)] h-full rounded-full transition-all duration-200"
                             style={{ width: `${uploadProgress}%` }}
                           />
                         </div>
-                        <div className="flex justify-between text-[10px] text-slate-400 font-mono">
+                        <div className="flex justify-between text-[10px] text-[var(--text-muted)] font-mono">
                           <span>
                             {selectedFile ? `${(selectedFile.size / 1024 / 1024).toFixed(1)} MB` : ''}
                           </span>
-                          <span className="text-indigo-400 font-bold">{uploadProgress}%</span>
+                          <span className="text-[var(--primary-green)] font-bold">{uploadProgress}%</span>
                         </div>
                       </div>
                     </div>
@@ -445,20 +445,20 @@ export default function CustomerShopPage() {
                   />
                   <button
                     onClick={() => cameraInputRef.current?.click()}
-                    className="w-full py-3.5 px-4 glass-card glass-card-hover rounded-xl border border-slate-700/60 text-slate-200 font-medium text-sm flex items-center justify-center space-x-2 text-indigo-300 hover:text-indigo-200"
+                    className="w-full py-3.5 px-4 bg-[var(--secondary-btn)] hover:opacity-90 rounded-full border border-[var(--card-border)] text-[var(--text-main)] font-medium text-sm flex items-center justify-center space-x-2 transition-all active:scale-98"
                   >
-                    <Camera className="w-5 h-5 text-indigo-400" />
+                    <Camera className="w-5 h-5 text-[var(--primary-green)]" />
                     <span>Take Photo of Physical Document</span>
                   </button>
                 </div>
 
-                <div className="flex items-center justify-center space-x-4 text-[11px] text-slate-400 pt-2">
+                <div className="flex items-center justify-center space-x-4 text-[11px] text-[var(--text-muted)] pt-2">
                   <span className="flex items-center">
-                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 mr-1" />
+                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 mr-1" />
                     Auto-deleted in 24h
                   </span>
                   <span className="flex items-center">
-                    <Zap className="w-3.5 h-3.5 text-indigo-400 mr-1" />
+                    <Zap className="w-3.5 h-3.5 text-[var(--primary-green)] mr-1" />
                     Instant UPI Print
                   </span>
                 </div>
@@ -470,12 +470,12 @@ export default function CustomerShopPage() {
               <div className="space-y-4 my-auto">
                 <div className="flex items-center justify-between">
                   <div>
-                    <span className="text-xs uppercase font-semibold text-indigo-400 tracking-wider">Step 2 of 3</span>
-                    <h2 className="text-lg font-bold text-slate-100">Print Settings</h2>
+                    <span className="text-xs uppercase font-semibold text-[var(--primary-green)] tracking-wider">Step 2 of 3</span>
+                    <h2 className="text-lg font-bold font-serif-title text-[var(--primary-green)]">Print Settings</h2>
                   </div>
                   <button
                     onClick={() => setActiveStep('upload')}
-                    className="text-xs text-indigo-400 hover:underline flex items-center"
+                    className="text-xs text-[var(--primary-green)] hover:underline flex items-center font-medium"
                   >
                     Change File
                   </button>
@@ -484,7 +484,7 @@ export default function CustomerShopPage() {
                 {/* File Thumbnail & Interactive Preview Card */}
                 <div
                   onClick={() => setShowFilePreviewModal(true)}
-                  className="glass-card glass-card-hover p-3 rounded-xl flex items-center justify-between border-indigo-500/30 hover:border-indigo-500/60 cursor-pointer group transition-all"
+                  className="bg-[var(--card-bg)] p-3 rounded-2xl flex items-center justify-between border border-[var(--card-border)] hover:border-[var(--primary-green)] cursor-pointer group transition-all"
                   title="Click to view and inspect document pages"
                 >
                   <div className="flex items-center space-x-3 min-w-0 flex-1">
@@ -492,19 +492,19 @@ export default function CustomerShopPage() {
                       <img
                         src={filePreviewUrl}
                         alt="Preview"
-                        className="w-12 h-12 object-cover rounded-lg border border-slate-700 group-hover:scale-105 transition-transform"
+                        className="w-12 h-12 object-cover rounded-lg border border-[var(--card-border)] group-hover:scale-105 transition-transform"
                       />
                     ) : (
-                      <div className="w-12 h-12 rounded-lg bg-indigo-950/80 border border-indigo-800/40 text-indigo-400 flex items-center justify-center group-hover:scale-105 transition-transform">
+                      <div className="w-12 h-12 rounded-lg bg-[var(--badge-bg)] text-[var(--badge-text)] flex items-center justify-center group-hover:scale-105 transition-transform">
                         <FileText className="w-6 h-6" />
                       </div>
                     )}
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs font-semibold text-slate-200 truncate group-hover:text-indigo-300 transition-colors">
+                      <p className="text-xs font-semibold text-[var(--text-main)] truncate group-hover:text-[var(--primary-green)] transition-colors">
                         {selectedFile.name}
                       </p>
-                      <p className="text-[11px] text-slate-400 flex items-center mt-0.5">
-                        <span className="bg-indigo-900/60 text-indigo-300 px-1.5 py-0.5 rounded mr-2 font-mono text-[10px]">
+                      <p className="text-[11px] text-[var(--text-muted)] flex items-center mt-0.5">
+                        <span className="bg-[var(--badge-bg)] text-[var(--badge-text)] px-1.5 py-0.5 rounded mr-2 font-mono text-[10px]">
                           {pageCount} {pageCount === 1 ? 'page' : 'pages'}
                         </span>
                         {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
@@ -518,55 +518,55 @@ export default function CustomerShopPage() {
                       e.stopPropagation();
                       setShowFilePreviewModal(true);
                     }}
-                    className="ml-2 px-3 py-1.5 bg-indigo-900/80 hover:bg-indigo-800 text-indigo-200 rounded-lg text-xs font-semibold flex items-center space-x-1.5 border border-indigo-700/50 transition-colors"
+                    className="ml-2 px-3 py-1.5 bg-[var(--secondary-btn)] hover:opacity-90 text-[var(--text-main)] rounded-full text-xs font-semibold flex items-center space-x-1.5 border border-[var(--card-border)] transition-colors"
                   >
-                    <Eye className="w-3.5 h-3.5 text-indigo-400" />
+                    <Eye className="w-3.5 h-3.5 text-[var(--primary-green)]" />
                     <span>View File</span>
                   </button>
                 </div>
 
                 {/* Settings Grid */}
-                <div className="glass-card p-4 rounded-xl space-y-4 border-slate-800">
+                <div className="bg-[var(--card-bg)] p-4 rounded-2xl space-y-4 border border-[var(--card-border)]">
                   {/* Copies Stepper */}
                   <div className="flex items-center justify-between">
                     <div>
-                      <label className="text-xs font-semibold text-slate-200">Number of Copies</label>
-                      <p className="text-[10px] text-slate-400">Total sets to print</p>
+                      <label className="text-xs font-semibold text-[var(--text-main)]">Number of Copies</label>
+                      <p className="text-[10px] text-[var(--text-muted)]">Total sets to print</p>
                     </div>
-                    <div className="flex items-center space-x-2 bg-slate-900 border border-slate-700/60 rounded-xl p-1">
+                    <div className="flex items-center space-x-2 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-full p-1">
                       <button
                         onClick={() => setSettings((s) => ({ ...s, copies: Math.max(1, s.copies - 1) }))}
-                        className="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 flex items-center justify-center transition-colors active:scale-95"
+                        className="w-8 h-8 rounded-full bg-[var(--secondary-btn)] text-[var(--text-main)] flex items-center justify-center transition-colors active:scale-95"
                       >
                         <Minus className="w-4 h-4" />
                       </button>
-                      <span className="w-8 text-center font-bold text-sm text-indigo-400">{settings.copies}</span>
+                      <span className="w-8 text-center font-bold text-sm text-[var(--primary-green)]">{settings.copies}</span>
                       <button
                         onClick={() => setSettings((s) => ({ ...s, copies: s.copies + 1 }))}
-                        className="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 flex items-center justify-center transition-colors active:scale-95"
+                        className="w-8 h-8 rounded-full bg-[var(--secondary-btn)] text-[var(--text-main)] flex items-center justify-center transition-colors active:scale-95"
                       >
                         <Plus className="w-4 h-4" />
                       </button>
                     </div>
                   </div>
 
-                  <hr className="border-slate-800/60" />
+                  <hr className="border-[var(--card-border)]" />
 
                   {/* Color Mode Toggle */}
                   <div className="space-y-1.5">
-                    <label className="text-xs font-semibold text-slate-200">Color Mode</label>
+                    <label className="text-xs font-semibold text-[var(--text-main)]">Color Mode</label>
                     <div className="grid grid-cols-2 gap-2">
                       <button
                         type="button"
                         onClick={() => setSettings((s) => ({ ...s, color_mode: 'bw' }))}
-                        className={`py-2.5 px-3 rounded-xl border text-xs font-medium flex items-center justify-center space-x-2 transition-all ${
+                        className={`py-2.5 px-3 rounded-full text-xs font-medium flex items-center justify-center space-x-2 transition-all ${
                           settings.color_mode === 'bw'
-                            ? 'bg-indigo-600 border-indigo-500 text-white shadow-md'
-                            : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200'
+                            ? 'bg-[var(--primary-green)] text-white shadow-md'
+                            : 'bg-[var(--secondary-btn)] border border-[var(--card-border)] text-[var(--text-muted)]'
                         }`}
                       >
                         <span>Black & White</span>
-                        <span className="text-[10px] opacity-75">
+                        <span className="text-[10px] opacity-80">
                           (₹{shop?.price_per_page_bw || 2}/pg)
                         </span>
                       </button>
@@ -574,33 +574,33 @@ export default function CustomerShopPage() {
                       <button
                         type="button"
                         onClick={() => setSettings((s) => ({ ...s, color_mode: 'color' }))}
-                        className={`py-2.5 px-3 rounded-xl border text-xs font-medium flex items-center justify-center space-x-2 transition-all ${
+                        className={`py-2.5 px-3 rounded-full text-xs font-medium flex items-center justify-center space-x-2 transition-all ${
                           settings.color_mode === 'color'
-                            ? 'bg-indigo-600 border-indigo-500 text-white shadow-md'
-                            : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200'
+                            ? 'bg-[var(--primary-green)] text-white shadow-md'
+                            : 'bg-[var(--secondary-btn)] border border-[var(--card-border)] text-[var(--text-muted)]'
                         }`}
                       >
                         <span>Full Color</span>
-                        <span className="text-[10px] opacity-75">
+                        <span className="text-[10px] opacity-80">
                           (₹{shop?.price_per_page_color || 10}/pg)
                         </span>
                       </button>
                     </div>
                   </div>
 
-                  <hr className="border-slate-800/60" />
+                  <hr className="border-[var(--card-border)]" />
 
                   {/* Duplex Switch */}
                   <div className="flex items-center justify-between">
                     <div>
-                      <label className="text-xs font-semibold text-slate-200">Double-Sided (Duplex)</label>
-                      <p className="text-[10px] text-slate-400">Print on both sides of paper</p>
+                      <label className="text-xs font-semibold text-[var(--text-main)]">Double-Sided (Duplex)</label>
+                      <p className="text-[10px] text-[var(--text-muted)]">Print on both sides of paper</p>
                     </div>
                     <button
                       type="button"
                       onClick={() => setSettings((s) => ({ ...s, duplex: !s.duplex }))}
                       className={`w-12 h-6 rounded-full transition-colors relative p-0.5 ${
-                        settings.duplex ? 'bg-indigo-600' : 'bg-slate-800'
+                        settings.duplex ? 'bg-[var(--primary-green)]' : 'bg-[var(--secondary-btn)]'
                       }`}
                     >
                       <div
@@ -611,36 +611,36 @@ export default function CustomerShopPage() {
                     </button>
                   </div>
 
-                  <hr className="border-slate-800/60" />
+                  <hr className="border-[var(--card-border)]" />
 
                   {/* Page Range Input */}
                   <div className="flex items-center justify-between">
                     <div>
-                      <label className="text-xs font-semibold text-slate-200">Page Range</label>
-                      <p className="text-[10px] text-slate-400">e.g. "all", "1-3", "5"</p>
+                      <label className="text-xs font-semibold text-[var(--text-main)]">Page Range</label>
+                      <p className="text-[10px] text-[var(--text-muted)]">e.g. "all", "1-3", "5"</p>
                     </div>
                     <input
                       type="text"
                       value={settings.page_range}
                       onChange={(e) => setSettings((s) => ({ ...s, page_range: e.target.value }))}
-                      className="w-24 px-2.5 py-1.5 bg-slate-900 border border-slate-700/60 rounded-lg text-xs font-mono text-center text-slate-200 focus:outline-none focus:border-indigo-500"
+                      className="w-24 px-2.5 py-1.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl text-xs font-mono text-center text-[var(--text-main)] focus:outline-none focus:border-[var(--primary-green)]"
                     />
                   </div>
                 </div>
 
                 {/* Price Breakdown Preview */}
-                <div className="glass-card p-4 rounded-xl border-indigo-500/30 bg-indigo-950/20 flex items-center justify-between">
+                <div className="p-4 rounded-2xl bg-[var(--card-bg)] border border-[var(--card-border)] flex items-center justify-between">
                   <div>
-                    <span className="text-[10px] uppercase font-bold text-indigo-400">Calculated Total</span>
-                    <p className="text-2xl font-black text-white">₹{currentPricing.total_price}</p>
-                    <p className="text-[10px] text-slate-400">
+                    <span className="text-[10px] uppercase font-bold text-[var(--primary-green)]">Calculated Total</span>
+                    <p className="text-2xl font-black font-serif-title text-[var(--primary-green)]">₹{currentPricing.total_price}</p>
+                    <p className="text-[10px] text-[var(--text-muted)]">
                       {currentPricing.total_pages} total pages ({pageCount} pgs × {settings.copies} copies)
                     </p>
                   </div>
                   <button
                     onClick={handleProceedToPayment}
                     disabled={creatingJob}
-                    className="py-3 px-5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold text-sm rounded-xl flex items-center space-x-2 shadow-lg shadow-indigo-600/30 transition-all active:scale-95 disabled:opacity-50"
+                    className="py-3 px-6 bg-[var(--primary-green)] hover:opacity-90 text-white font-bold text-sm rounded-full flex items-center space-x-2 shadow-md transition-all active:scale-95 disabled:opacity-50"
                   >
                     {creatingJob ? (
                       <RefreshCw className="w-4 h-4 animate-spin" />
@@ -659,47 +659,47 @@ export default function CustomerShopPage() {
             {activeStep === 'pay' && createdJob && (
               <div className="space-y-4 my-auto">
                 <div className="text-center space-y-1">
-                  <span className="text-xs uppercase font-semibold text-indigo-400 tracking-wider">Step 3 of 3</span>
-                  <h2 className="text-xl font-bold text-slate-100">Review & UPI Checkout</h2>
-                  <p className="text-xs text-slate-400">Pay securely to send your document to the printer queue</p>
+                  <span className="text-xs uppercase font-semibold text-[var(--primary-green)] tracking-wider">Step 3 of 3</span>
+                  <h2 className="text-xl font-bold font-serif-title text-[var(--primary-green)]">Review & UPI Checkout</h2>
+                  <p className="text-xs text-[var(--text-muted)]">Pay securely to send your document to the printer queue</p>
                 </div>
 
                 {/* Receipt Card */}
-                <div className="glass-card p-5 rounded-2xl space-y-3 border-indigo-500/30">
-                  <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-                    <span className="text-xs text-slate-400">Document</span>
-                    <span className="text-xs font-semibold text-slate-200 truncate max-w-[200px]">
+                <div className="bg-[var(--card-bg)] p-5 rounded-2xl space-y-3 border border-[var(--card-border)]">
+                  <div className="flex items-center justify-between border-b border-[var(--card-border)] pb-3">
+                    <span className="text-xs text-[var(--text-muted)]">Document</span>
+                    <span className="text-xs font-semibold text-[var(--text-main)] truncate max-w-[200px]">
                       {createdJob.file_name}
                     </span>
                   </div>
 
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-slate-400">Pages</span>
-                    <span className="text-slate-200">{createdJob.page_count}</span>
+                    <span className="text-[var(--text-muted)]">Pages</span>
+                    <span className="text-[var(--text-main)] font-semibold">{createdJob.page_count}</span>
                   </div>
 
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-slate-400">Copies</span>
-                    <span className="text-slate-200">{createdJob.copies}</span>
+                    <span className="text-[var(--text-muted)]">Copies</span>
+                    <span className="text-[var(--text-main)] font-semibold">{createdJob.copies}</span>
                   </div>
 
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-slate-400">Print Mode</span>
-                    <span className="text-slate-200 capitalize">
+                    <span className="text-[var(--text-muted)]">Print Mode</span>
+                    <span className="text-[var(--text-main)] font-semibold capitalize">
                       {createdJob.color_mode === 'bw' ? 'Black & White' : 'Full Color'}
                     </span>
                   </div>
 
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-slate-400">Duplex</span>
-                    <span className="text-slate-200">{createdJob.duplex ? 'Yes (Double-sided)' : 'No'}</span>
+                    <span className="text-[var(--text-muted)]">Duplex</span>
+                    <span className="text-[var(--text-main)] font-semibold">{createdJob.duplex ? 'Yes (Double-sided)' : 'No'}</span>
                   </div>
 
-                  <hr className="border-slate-800" />
+                  <hr className="border-[var(--card-border)]" />
 
                   <div className="flex items-center justify-between pt-1">
-                    <span className="text-sm font-bold text-slate-200">Total Payable</span>
-                    <span className="text-2xl font-black text-emerald-400">₹{createdJob.price}</span>
+                    <span className="text-sm font-bold text-[var(--text-main)] font-serif-title">Total Payable</span>
+                    <span className="text-2xl font-black font-serif-title text-[var(--primary-green)]">₹{createdJob.price}</span>
                   </div>
                 </div>
 
@@ -708,7 +708,7 @@ export default function CustomerShopPage() {
                   <button
                     onClick={handleSimulatePayment}
                     disabled={paymentSimulating}
-                    className="w-full py-4 px-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-base rounded-2xl flex items-center justify-center space-x-2 shadow-xl shadow-emerald-600/30 transition-all active:scale-95 disabled:opacity-50"
+                    className="w-full py-4 px-4 bg-[var(--primary-green)] hover:opacity-90 text-white font-bold text-base rounded-full flex items-center justify-center space-x-2 shadow-md transition-all active:scale-95 disabled:opacity-50"
                   >
                     {paymentSimulating ? (
                       <RefreshCw className="w-5 h-5 animate-spin" />
@@ -720,7 +720,7 @@ export default function CustomerShopPage() {
                     )}
                   </button>
 
-                  <p className="text-[11px] text-center text-slate-500">
+                  <p className="text-[11px] text-center text-[var(--text-muted)]">
                     Supports Google Pay, PhonePe, Paytm, BHIM & All UPI Apps
                   </p>
                 </div>
@@ -730,15 +730,15 @@ export default function CustomerShopPage() {
             {/* LIVE STATUS STEPPER */}
             {activeStep === 'status' && createdJob && (
               <div className="space-y-5 my-auto">
-                <div className="glass-card p-6 rounded-2xl text-center border-indigo-500/40 relative overflow-hidden">
+                <div className="bg-[var(--card-bg)] p-6 rounded-2xl text-center border border-[var(--card-border)] relative overflow-hidden">
                   {/* Status Visual Badges */}
                   {createdJob.status === 'queued' && (
                     <div className="space-y-3">
-                      <div className="w-16 h-16 rounded-full bg-indigo-900/60 border border-indigo-500/40 text-indigo-400 flex items-center justify-center mx-auto animate-pulse-glow">
+                      <div className="w-16 h-16 rounded-full bg-[var(--badge-bg)] text-[var(--badge-text)] flex items-center justify-center mx-auto animate-pulse-glow">
                         <Clock className="w-8 h-8" />
                       </div>
-                      <h3 className="text-xl font-black text-white">In Printer Queue</h3>
-                      <p className="text-xs text-indigo-300 font-medium">
+                      <h3 className="text-xl font-black font-serif-title text-[var(--primary-green)]">In Printer Queue</h3>
+                      <p className="text-xs text-[var(--text-muted)] font-medium">
                         Payment Received • {queueAheadCount > 0 ? `${queueAheadCount} job(s) ahead of you` : 'You are next in line!'}
                       </p>
                     </div>
@@ -746,31 +746,31 @@ export default function CustomerShopPage() {
 
                   {createdJob.status === 'printing' && (
                     <div className="space-y-3">
-                      <div className="w-16 h-16 rounded-full bg-amber-950/80 border border-amber-500/60 text-amber-400 flex items-center justify-center mx-auto animate-spin">
+                      <div className="w-16 h-16 rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center mx-auto animate-spin">
                         <Printer className="w-8 h-8" />
                       </div>
-                      <h3 className="text-xl font-black text-amber-400">Printing Now...</h3>
-                      <p className="text-xs text-slate-300">Your pages are coming out of the shop printer.</p>
+                      <h3 className="text-xl font-black font-serif-title text-amber-600 dark:text-amber-400">Printing Now...</h3>
+                      <p className="text-xs text-[var(--text-muted)]">Your pages are coming out of the shop printer.</p>
                     </div>
                   )}
 
                   {createdJob.status === 'done' && (
                     <div className="space-y-3">
-                      <div className="w-16 h-16 rounded-full bg-emerald-950/80 border border-emerald-500/60 text-emerald-400 flex items-center justify-center mx-auto">
+                      <div className="w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto">
                         <CheckCircle2 className="w-10 h-10" />
                       </div>
-                      <h3 className="text-xl font-black text-emerald-400">Ready for Pickup!</h3>
-                      <p className="text-xs text-slate-300">Please collect your printed document at the shop counter.</p>
+                      <h3 className="text-xl font-black font-serif-title text-emerald-600 dark:text-emerald-400">Ready for Pickup!</h3>
+                      <p className="text-xs text-[var(--text-muted)]">Please collect your printed document at the shop counter.</p>
                     </div>
                   )}
 
                   {createdJob.status === 'failed' && (
                     <div className="space-y-3">
-                      <div className="w-16 h-16 rounded-full bg-rose-950/80 border border-rose-500/60 text-rose-400 flex items-center justify-center mx-auto">
+                      <div className="w-16 h-16 rounded-full bg-rose-500/20 text-rose-500 flex items-center justify-center mx-auto">
                         <AlertTriangle className="w-8 h-8" />
                       </div>
-                      <h3 className="text-xl font-black text-rose-400">Print Failed</h3>
-                      <p className="text-xs text-rose-300">
+                      <h3 className="text-xl font-black font-serif-title text-rose-500">Print Failed</h3>
+                      <p className="text-xs text-rose-600 dark:text-rose-400">
                         {createdJob.failure_reason || 'Paper jam or printer error. Please speak with the shopkeeper.'}
                       </p>
                     </div>
@@ -778,24 +778,24 @@ export default function CustomerShopPage() {
                 </div>
 
                 {/* Job Summary Card */}
-                <div className="glass-card p-4 rounded-xl space-y-2 text-xs border-slate-800">
-                  <div className="flex justify-between text-slate-400">
+                <div className="bg-[var(--card-bg)] p-4 rounded-2xl space-y-2 text-xs border border-[var(--card-border)]">
+                  <div className="flex justify-between text-[var(--text-muted)]">
                     <span>Unique Customer ID</span>
-                    <span className="font-mono text-violet-300 font-semibold">{createdJob.customer_id || customerId || 'usr_anon'}</span>
+                    <span className="font-mono text-[var(--primary-green)] font-semibold">{createdJob.customer_id || customerId || 'usr_anon'}</span>
                   </div>
-                  <div className="flex justify-between text-slate-400">
+                  <div className="flex justify-between text-[var(--text-muted)]">
                     <span>Order Job ID</span>
-                    <span className="font-mono text-indigo-300 font-bold">#{createdJob.id.substring(0, 8)}</span>
+                    <span className="font-mono text-[var(--text-main)] font-bold">#{createdJob.id.substring(0, 8)}</span>
                   </div>
-                  <div className="flex justify-between text-slate-400">
+                  <div className="flex justify-between text-[var(--text-muted)]">
                     <span>File</span>
-                    <span className="font-semibold text-slate-200 truncate max-w-[180px]">
+                    <span className="font-semibold text-[var(--text-main)] truncate max-w-[180px]">
                       {createdJob.file_name}
                     </span>
                   </div>
-                  <div className="flex justify-between text-slate-400">
+                  <div className="flex justify-between text-[var(--text-muted)]">
                     <span>Print Mode</span>
-                    <span className="text-slate-200 capitalize">
+                    <span className="text-[var(--text-main)] capitalize">
                       {createdJob.color_mode} ({createdJob.copies} copies)
                     </span>
                   </div>
@@ -808,7 +808,7 @@ export default function CustomerShopPage() {
                     setSelectedFile(null);
                     setCreatedJob(null);
                   }}
-                  className="w-full py-3.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-sm rounded-xl flex items-center justify-center space-x-2"
+                  className="w-full py-3.5 bg-[var(--secondary-btn)] hover:opacity-90 text-[var(--text-main)] font-semibold text-sm rounded-full flex items-center justify-center space-x-2 border border-[var(--card-border)]"
                 >
                   <Plus className="w-4 h-4" />
                   <span>Print Another Document</span>
@@ -821,18 +821,18 @@ export default function CustomerShopPage() {
 
       {/* Document Preview Modal */}
       {showFilePreviewModal && selectedFile && (
-        <div className="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex flex-col justify-between p-4 md:p-6 animate-in fade-in duration-200">
-          <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+        <div className="fixed inset-0 z-50 bg-[var(--bg-color)]/95 backdrop-blur-md flex flex-col justify-between p-4 md:p-6 animate-in fade-in duration-200">
+          <div className="flex items-center justify-between pb-3 border-b border-[var(--card-border)]">
             <div className="flex items-center space-x-3 min-w-0">
-              <div className="w-9 h-9 rounded-xl bg-indigo-900/60 border border-indigo-500/40 text-indigo-400 flex items-center justify-center shrink-0">
+              <div className="w-9 h-9 rounded-xl bg-[var(--badge-bg)] text-[var(--badge-text)] flex items-center justify-center shrink-0">
                 <FileText className="w-5 h-5" />
               </div>
               <div className="min-w-0">
-                <h3 className="font-bold text-sm text-slate-100 truncate max-w-[200px] sm:max-w-md">
+                <h3 className="font-bold text-sm text-[var(--text-main)] truncate max-w-[200px] sm:max-w-md">
                   {selectedFile.name}
                 </h3>
-                <p className="text-[11px] text-slate-400 flex items-center">
-                  <span className="text-indigo-400 font-semibold mr-2 font-mono">
+                <p className="text-[11px] text-[var(--text-muted)] flex items-center">
+                  <span className="text-[var(--primary-green)] font-semibold mr-2 font-mono">
                     {pageCount} {pageCount === 1 ? 'page' : 'pages'}
                   </span>
                   • {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
@@ -841,7 +841,7 @@ export default function CustomerShopPage() {
             </div>
             <button
               onClick={() => setShowFilePreviewModal(false)}
-              className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs flex items-center justify-center transition-colors"
+              className="p-2 rounded-xl bg-[var(--secondary-btn)] text-[var(--text-main)] font-semibold text-xs flex items-center justify-center transition-colors border border-[var(--card-border)]"
               title="Close Preview"
             >
               <X className="w-5 h-5" />
@@ -849,12 +849,12 @@ export default function CustomerShopPage() {
           </div>
 
           {/* Viewer Area */}
-          <div className="flex-1 my-3 bg-slate-900/80 rounded-2xl overflow-hidden border border-slate-800 flex items-center justify-center relative p-2 shadow-2xl">
+          <div className="flex-1 my-3 bg-[var(--card-bg)] rounded-2xl overflow-hidden border border-[var(--card-border)] flex items-center justify-center relative p-2 shadow-xl">
             {selectedFile.type.startsWith('image/') || filePreviewUrl ? (
               <img
                 src={filePreviewUrl || URL.createObjectURL(selectedFile)}
                 alt="Document Preview"
-                className="max-h-full max-w-full object-contain rounded-lg shadow-2xl"
+                className="max-h-full max-w-full object-contain rounded-lg shadow-xl"
               />
             ) : (
               <iframe
@@ -867,7 +867,7 @@ export default function CustomerShopPage() {
 
           <button
             onClick={() => setShowFilePreviewModal(false)}
-            className="w-full py-3.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold text-sm rounded-xl shadow-lg shadow-indigo-600/30 transition-all active:scale-95"
+            className="w-full py-3.5 bg-[var(--primary-green)] hover:opacity-90 text-white font-bold text-sm rounded-full shadow-md transition-all active:scale-95"
           >
             Close Preview & Return to Order
           </button>
@@ -875,7 +875,7 @@ export default function CustomerShopPage() {
       )}
 
       {/* Footer Branding */}
-      <footer className="mt-4 pt-3 border-t border-slate-800/60 text-center text-[10px] text-slate-500">
+      <footer className="mt-4 pt-3 border-t border-[var(--card-border)] text-center text-[10px] text-[var(--text-muted)]">
         Powered by PrintEzz • QR Instant Self-Service Printing
       </footer>
     </div>
