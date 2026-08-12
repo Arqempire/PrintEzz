@@ -1,0 +1,16 @@
+{
+  "name": "PrintEzz — Self-Service QR Print Shop",
+  "short_name": "PrintEzz",
+  "description": "Scan, Upload, Pay, and Print instantly from your phone browser.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#090d16",
+  "theme_color": "#4f46e5",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}
